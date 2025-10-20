@@ -18,7 +18,7 @@ const GAS_LIMIT = 30_000n;
 const GAS_LIMIT_FILLER = 21_000n;
 // ---------------------
 
-interface HashResult {
+export interface HashResult {
   signedRawTx: string;
   txHash: string;
   nonce: number;
@@ -263,13 +263,7 @@ class HashMaker {
     signedRawTx,
     txHash,
     gasPrice,
-  }: {
-    nonce: number;
-    initialNonce: number;
-    signedRawTx: string;
-    txHash: string;
-    gasPrice: bigint;
-  }) {
+  }: HashResult) {
     // 3. Submit fillers if nonces were skipped
     if (nonce > initialNonce) {
       console.log(
