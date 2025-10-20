@@ -6,7 +6,7 @@ const RPC = IS_MAINNET
   ? "https://bsc-dataseed.binance.org/"
   : "https://data-seed-prebsc-1-s1.binance.org:8545/";
 const USDT_CONTRACT_ADDRESS = IS_MAINNET
-  ? "0x55d398326f99059ff775485246f0dae65e7fa447"
+  ? "0x55d398326f99059ff775485246999027b3197955"
   : "0x337610d27c682e347c9cd60bd4b3b107c9d34ddd";
 const USDT_ABI = [
   "function transfer(address to, uint256 amount) returns (bool)",
