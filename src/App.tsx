@@ -7,6 +7,7 @@ import { Input } from "./components/Input";
 import { Button } from "./components/Button";
 import { cn } from "./lib/utils";
 import { Dialog } from "radix-ui";
+import { Select } from "./components/Select";
 
 const HEXADECIMAL_CHARS = "0123456789abcdef";
 
@@ -25,6 +26,10 @@ const hashMakerSchema = yup
       .matches(/^[0-9a-fA-F]+$/, "Must be hexadecimal characters")
       .required()
       .label("Target Character"),
+    gasLimit: yup
+      .string()
+      .oneOf(["average", "fast", "instant"])
+      .label("Gas Fee"),
   })
   .required();
 
@@ -76,12 +81,14 @@ function HashMakerApp({ privateKey }: { privateKey: string }) {
     defaultValues: {
       receiverAddress: "",
       amount: "",
+      gasLimit: "average",
       targetCharacter: "",
     },
     resolver: yupResolver(hashMakerSchema),
   });
 
   const findMatchingHash = async (data: {
+    gasLimit?: "average" | "fast" | "instant";
     receiverAddress: string;
     amount: string;
     targetCharacter: string;
@@ -93,6 +100,7 @@ function HashMakerApp({ privateKey }: { privateKey: string }) {
       targetCharacter: data.targetCharacter,
       receiver: data.receiverAddress,
       amount: data.amount,
+      gasLimit: data.gasLimit!,
       broadcastIfFound: false,
     })) as HashResult;
 
@@ -172,6 +180,28 @@ function HashMakerApp({ privateKey }: { privateKey: string }) {
               <Input type="number" step="any" id="amount" {...field} />
               {errors.amount && (
                 <p className="text-sm text-red-500">{errors.amount.message}</p>
+              )}
+            </div>
+          )}
+        />
+
+        <Controller
+          name="gasLimit"
+          control={control}
+          render={({ field }) => (
+            <div className="flex flex-col gap-1">
+              <label htmlFor="gasLimit" className="text-center">
+                Gas Limit:
+              </label>
+              <Select id="gasLimit" {...field}>
+                <Select.Option value="average">Average</Select.Option>
+                <Select.Option value="fast">Fast</Select.Option>
+                <Select.Option value="instant">Instant</Select.Option>
+              </Select>
+              {errors.gasLimit && (
+                <p className="text-sm text-red-500">
+                  {errors.gasLimit.message}
+                </p>
               )}
             </div>
           )}

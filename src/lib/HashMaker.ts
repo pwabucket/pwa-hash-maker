@@ -14,8 +14,14 @@ const USDT_ABI = [
 const USDT_DECIMALS = 18;
 const LOW_GAS_PRICE = ethers.parseUnits("0.13", "gwei");
 const MINOR_GAS_INCREMENT = ethers.parseUnits("0.005", "gwei");
-const GAS_LIMIT = 45_000n;
 const GAS_LIMIT_FILLER = 21_000n;
+
+const GAS_LIMITS_TRANSFER = {
+  average: 45_000n,
+  fast: 60_000n,
+  instant: 75_000n,
+};
+
 // ---------------------
 
 export interface HashResult {
@@ -212,11 +218,13 @@ class HashMaker {
     targetCharacter,
     receiver,
     amount,
+    gasLimit,
     broadcastIfFound = false,
   }: {
     targetCharacter: string;
     receiver: string;
     amount: string;
+    gasLimit: keyof typeof GAS_LIMITS_TRANSFER;
     broadcastIfFound: boolean;
   }) {
     if (!this.address) {
@@ -227,15 +235,15 @@ class HashMaker {
     const data = this._buildTokenCallData(receiver, amount);
     const { chainId } = await this.provider.getNetwork();
 
-    const gasPrice = LOW_GAS_PRICE;
-    const gasLimit = GAS_LIMIT;
+    const txGasPrice = LOW_GAS_PRICE;
+    const txGasLimit = GAS_LIMITS_TRANSFER[gasLimit];
 
     const baseTx = {
       to: USDT_CONTRACT_ADDRESS,
       value: 0n,
       data,
-      gasLimit,
-      gasPrice,
+      gasLimit: txGasLimit,
+      gasPrice: txGasPrice,
       chainId,
     };
 
@@ -247,7 +255,7 @@ class HashMaker {
         this.address,
         "pending"
       ),
-      gasPrice,
+      gasPrice: txGasPrice,
     });
 
     if (!broadcastIfFound) {
