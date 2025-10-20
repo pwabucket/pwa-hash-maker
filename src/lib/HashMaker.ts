@@ -60,12 +60,12 @@ class HashMaker {
    * Loops through nonces, signs transactions, and checks hash suffix until a match is found.
    */
   private async _findMatchingHash({
-    targetCharacters,
+    targetCharacter,
     baseTx,
     initialNonce,
     gasPrice,
   }: {
-    targetCharacters: string[];
+    targetCharacter: string;
     baseTx: object;
     initialNonce: number;
     gasPrice: bigint;
@@ -81,7 +81,7 @@ class HashMaker {
 
       attempts++;
 
-      if (targetCharacters.includes(actualSuffix)) {
+      if (targetCharacter === actualSuffix) {
         console.log(`\n✅ Found match after ${attempts} attempts!`);
         console.log("Target Suffix:", actualSuffix);
         console.log("Target Nonce:", nonce);
@@ -208,12 +208,12 @@ class HashMaker {
    * Main method to find a matching hash, submit fillers, and broadcast the target transaction.
    */
   public async generateTransaction({
-    targetCharacters,
+    targetCharacter,
     receiver,
     amount,
     broadcastIfFound = false,
   }: {
-    targetCharacters: string[];
+    targetCharacter: string;
     receiver: string;
     amount: string;
     broadcastIfFound: boolean;
@@ -243,7 +243,7 @@ class HashMaker {
 
     // 2. Find the matching hash
     const hashResult = await this._findMatchingHash({
-      targetCharacters,
+      targetCharacter,
       baseTx,
       initialNonce: await this.provider.getTransactionCount(
         this.address,
