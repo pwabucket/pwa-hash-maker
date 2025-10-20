@@ -225,9 +225,6 @@ class HashMaker {
     // 1. Prepare static transaction data
     const data = this._buildTokenCallData(receiver, amount);
     const { chainId } = await this.provider.getNetwork();
-    const feeData = await this.provider.getFeeData();
-
-    console.log("Current Gas Price:", feeData);
 
     const gasPrice = LOW_GAS_PRICE;
     const gasLimit = GAS_LIMIT;
@@ -252,13 +249,27 @@ class HashMaker {
       gasPrice,
     });
 
-    const { signedRawTx, txHash, nonce, initialNonce } = hashResult;
-
     if (!broadcastIfFound) {
       console.log("Not broadcasting (broadcastIfFound=false).");
-      return { signedRawTx, txHash };
+      return hashResult;
     }
 
+    return this.submitTransferTransaction(hashResult);
+  }
+
+  async submitTransferTransaction({
+    nonce,
+    initialNonce,
+    signedRawTx,
+    txHash,
+    gasPrice,
+  }: {
+    nonce: number;
+    initialNonce: number;
+    signedRawTx: string;
+    txHash: string;
+    gasPrice: bigint;
+  }) {
     // 3. Submit fillers if nonces were skipped
     if (nonce > initialNonce) {
       console.log(
