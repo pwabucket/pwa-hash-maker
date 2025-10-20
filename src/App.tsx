@@ -6,6 +6,7 @@ import HashMaker, { type HashResult } from "./lib/HashMaker";
 import { Input } from "./components/Input";
 import { Button } from "./components/Button";
 import { cn } from "./lib/utils";
+import { Dialog } from "radix-ui";
 
 const HEXADECIMAL_CHARS = "0123456789abcdef";
 
@@ -63,6 +64,7 @@ function PrivateKeyForm({
 
 function HashMakerApp({ privateKey }: { privateKey: string }) {
   const ref = useRef<HashMaker | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [address, setAddress] = useState<string | null>(null);
   const [hashResult, setHashResult] = useState<HashResult | null>(null);
 
@@ -98,6 +100,22 @@ function HashMakerApp({ privateKey }: { privateKey: string }) {
     setHashResult(result);
   };
 
+  const submitTransaction = async () => {
+    if (!ref.current || !hashResult) return;
+
+    try {
+      setIsSubmitting(true);
+      await ref.current.submitTransferTransaction(hashResult);
+      alert("Transaction submitted successfully!");
+      setHashResult(null);
+    } catch (error) {
+      console.error("Error submitting transaction:", error);
+      alert("Failed to submit transaction.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   useEffect(() => {
     async function init() {
       ref.current = new HashMaker({ privateKey });
@@ -110,6 +128,14 @@ function HashMakerApp({ privateKey }: { privateKey: string }) {
 
   return (
     <>
+      {hashResult && (
+        <TransactionDialog
+          isSubmitting={isSubmitting}
+          hashResult={hashResult}
+          submitTransaction={submitTransaction}
+          onClose={() => setHashResult(null)}
+        />
+      )}
       <form
         onSubmit={handleSubmit(findMatchingHash)}
         className="flex flex-col gap-4 my-4"
@@ -185,6 +211,46 @@ function HashMakerApp({ privateKey }: { privateKey: string }) {
         <Button type="submit">Find Matching Hash</Button>
       </form>
     </>
+  );
+}
+
+function TransactionDialog({
+  hashResult,
+  isSubmitting,
+  onClose,
+  submitTransaction,
+}: {
+  hashResult: HashResult;
+  isSubmitting: boolean;
+  onClose: () => void;
+  submitTransaction: () => void;
+}) {
+  return (
+    <Dialog.Root open={true} onOpenChange={onClose}>
+      <Dialog.Portal>
+        <Dialog.Overlay className="fixed inset-0 bg-black/50 grid place-items-center p-4">
+          <Dialog.Content className="bg-zinc-800 rounded-md p-6 w-full max-w-md text-white">
+            <Dialog.Title className="text-lg font-bold mb-4">
+              Matching Hash Found!
+            </Dialog.Title>
+            <div className="flex flex-col gap-2">
+              <p className="break-all">
+                <strong>Attempts:</strong>{" "}
+                {hashResult.nonce - hashResult.initialNonce + 1}
+              </p>
+
+              <p className="break-all">
+                <strong>Transaction Hash:</strong> {hashResult.txHash}
+              </p>
+
+              <Button disabled={isSubmitting} onClick={submitTransaction}>
+                {isSubmitting ? "Submitting..." : "Submit Transaction"}
+              </Button>
+            </div>
+          </Dialog.Content>
+        </Dialog.Overlay>
+      </Dialog.Portal>
+    </Dialog.Root>
   );
 }
 
