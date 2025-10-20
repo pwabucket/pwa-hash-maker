@@ -14,7 +14,7 @@ const USDT_ABI = [
 const USDT_DECIMALS = 18;
 const LOW_GAS_PRICE = ethers.parseUnits("0.13", "gwei");
 const MINOR_GAS_INCREMENT = ethers.parseUnits("0.005", "gwei");
-const GAS_LIMIT = 30_000n;
+const GAS_LIMIT = 45_000n;
 const GAS_LIMIT_FILLER = 21_000n;
 // ---------------------
 
@@ -185,8 +185,9 @@ class HashMaker {
           )}...`
         );
 
-        await txResponse.wait();
-        console.log(`  ✅ Filler Tx Nonce ${nonce} mined.`);
+        /** Optionally wait for the transaction to be mined */
+        // await txResponse.wait();
+        // console.log(`  ✅ Filler Tx Nonce ${nonce} mined.`);
       } catch (error) {
         if (error instanceof Error && error.message.includes("already known")) {
           console.log(
