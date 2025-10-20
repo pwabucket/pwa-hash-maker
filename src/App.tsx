@@ -42,14 +42,14 @@ function PrivateKeyForm({
 
   return (
     <>
-      <h1>HashMaker</h1>
-      <p>Enter Your Private Key</p>
       <form
         onSubmit={handleSubmit((data) => onSubmit(data.privateKey))}
         className="flex flex-col gap-2 my-4"
       >
         <div className="flex flex-col gap-1">
-          <label htmlFor="private-key">Private Key:</label>
+          <label htmlFor="private-key" className="text-center">
+            Private Key:
+          </label>
           <Input id="private-key" type="text" {...register("privateKey")} />
           {errors.privateKey && (
             <p className="text-sm text-red-500">{errors.privateKey.message}</p>
@@ -110,19 +110,23 @@ function HashMakerApp({ privateKey }: { privateKey: string }) {
 
   return (
     <>
-      <h1>HashMaker App Initialized</h1>
-      <div className="font-bold"> with address: {address}</div>
       <form
         onSubmit={handleSubmit(findMatchingHash)}
         className="flex flex-col gap-4 my-4"
       >
+        <h3 className="font-bold text-center break-all">
+          {" "}
+          with address: {address}
+        </h3>
         <Controller
           name="receiverAddress"
           control={control}
           render={({ field }) => (
             <div className="flex flex-col gap-1">
-              <label>Receiver Address:</label>
-              <Input type="text" {...field} />
+              <label htmlFor="receiver-address" className="text-center">
+                Receiver Address:
+              </label>
+              <Input type="text" id="receiver-address" {...field} />
               {errors.receiverAddress && (
                 <p className="text-sm text-red-500">
                   {errors.receiverAddress.message}
@@ -136,8 +140,10 @@ function HashMakerApp({ privateKey }: { privateKey: string }) {
           control={control}
           render={({ field }) => (
             <div className="flex flex-col gap-1">
-              <label>Amount:</label>
-              <Input type="number" step="any" {...field} />
+              <label htmlFor="amount" className="text-center">
+                Amount:
+              </label>
+              <Input type="number" step="any" id="amount" {...field} />
               {errors.amount && (
                 <p className="text-sm text-red-500">{errors.amount.message}</p>
               )}
@@ -149,7 +155,9 @@ function HashMakerApp({ privateKey }: { privateKey: string }) {
           control={control}
           render={({ field }) => (
             <div className="flex flex-col gap-1">
-              <label>Target Character (hex):</label>
+              <label htmlFor="target-character" className="text-center">
+                Target Character (hex):
+              </label>
 
               <div className="grid grid-cols-4 gap-4">
                 {HEXADECIMAL_CHARS.split("").map((char) => (
@@ -184,13 +192,16 @@ function App() {
   const [privateKey, setPrivateKey] = useState("");
 
   return (
-    <>
-      {privateKey ? (
-        <HashMakerApp privateKey={privateKey} />
-      ) : (
-        <PrivateKeyForm onSubmit={(key) => setPrivateKey(key)} />
-      )}
-    </>
+    <div className="grid place-items-center min-h-screen p-4">
+      <div className="w-full max-w-md flex flex-col gap-4">
+        <h1 className="text-2xl font-bold text-center">Hash Maker</h1>
+        {privateKey ? (
+          <HashMakerApp privateKey={privateKey} />
+        ) : (
+          <PrivateKeyForm onSubmit={(key) => setPrivateKey(key)} />
+        )}
+      </div>
+    </div>
   );
 }
 
