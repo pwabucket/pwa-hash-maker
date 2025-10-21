@@ -1,7 +1,8 @@
 import { type HashResult } from "../lib/HashMaker";
 import { Button } from "../components/Button";
 import { Dialog } from "radix-ui";
-import { copyToClipboard } from "../lib/utils";
+import { cn, copyToClipboard } from "../lib/utils";
+import { HiOutlineClipboard } from "react-icons/hi2";
 
 function HashResultDetail({
   title,
@@ -13,15 +14,19 @@ function HashResultDetail({
   shouldCopy?: boolean;
 }) {
   return (
-    <div className="flex flex-col gap-1 bg-zinc-700 p-2 rounded-md text-sm">
-      <span className="font-semibold text-zinc-300">{title}:</span>
+    <div className="flex flex-col gap-1 bg-zinc-700 p-4 rounded-md text-sm">
+      <span className="font-semibold text-blue-300">{title}:</span>
       <span className="break-all font-mono font-bold">{value}</span>
 
       {shouldCopy ? (
         <button
-          className="p-2 bg-blue-600 rounded-md text-xs"
+          className={cn(
+            "p-2 text-xs text-zinc-300 flex items-center gap-1 hover:text-white",
+            "cursor-pointer"
+          )}
           onClick={() => copyToClipboard(String(value))}
         >
+          <HiOutlineClipboard className="size-4" />
           Copy
         </button>
       ) : null}
@@ -46,12 +51,13 @@ function TransactionDialog({
     <Dialog.Root open={true} onOpenChange={onClose}>
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 bg-black/50 grid place-items-center p-4 overflow-auto">
-          <Dialog.Content className="bg-zinc-800 rounded-md p-6 w-full max-w-md text-white">
-            <Dialog.Title className="text-lg text-center font-bold mb-2">
+          <Dialog.Content className="bg-zinc-800 rounded-md p-6 w-full max-w-md text-white flex flex-col gap-4">
+            <Dialog.Title className="text-center font-megrim text-4xl">
               Hash Found
             </Dialog.Title>
-            <Dialog.Description className="mb-2 p-2 text-sm">
-              A matching hash has been found. Below are the details:
+            <Dialog.Description className="p-2 text-sm">
+              A matching hash has been found. Ensure to copy the details below
+              before proceeding.:
             </Dialog.Description>
 
             <div className="flex flex-col gap-2">

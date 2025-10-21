@@ -11,7 +11,6 @@ import { TransactionDialog } from "./TransactionDialog";
 import USDTIcon from "../assets/tether-usdt-logo.svg";
 
 const HEXADECIMAL_CHARS = "0123456789abcdef";
-
 const hashMakerSchema = yup
   .object({
     receiverAddress: yup.string().required().label("Receiver Address"),
@@ -115,9 +114,10 @@ function HashMakerApp({ privateKey }: { privateKey: string }) {
           }}
         />
       )}
+
       <form
         onSubmit={handleSubmit(findMatchingHash)}
-        className="flex flex-col gap-4 my-4"
+        className="flex flex-col gap-4"
       >
         {/* Address */}
         <h3 className="font-mono font-bold text-blue-400 text-center break-all">
@@ -202,8 +202,11 @@ function HashMakerApp({ privateKey }: { privateKey: string }) {
                     key={char}
                     type="button"
                     className={cn(
-                      "p-2 border border-zinc-700 rounded-md",
-                      field.value === char && "bg-blue-700"
+                      "p-2 border rounded-md cursor-pointer",
+                      "font-bold font-mono",
+                      field.value === char
+                        ? "border-blue-500"
+                        : "border-zinc-700"
                     )}
                     onClick={() => field.onChange(char)}
                   >

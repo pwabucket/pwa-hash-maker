@@ -23,23 +23,18 @@ function PrivateKeyForm({
     <>
       <form
         onSubmit={handleSubmit((data) => onSubmit(data.privateKey))}
-        className="flex flex-col gap-2 my-4"
+        className="flex flex-col gap-4"
       >
         <Controller
           name="privateKey"
           control={control}
           render={({ field }) => (
-            <div className="flex flex-col gap-1">
-              <label htmlFor="private-key" className="text-center">
-                Private Key:
-              </label>
-              <Textarea
-                id="private-key"
-                rows={4}
-                placeholder="Enter BSC/BEP20 Private Key"
-                {...field}
-              />
-            </div>
+            <Textarea
+              id="private-key"
+              rows={3}
+              placeholder="Enter BSC/BEP20 Private Key"
+              {...field}
+            />
           )}
         />
         <Button type="submit">Submit</Button>
