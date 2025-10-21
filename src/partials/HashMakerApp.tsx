@@ -8,6 +8,7 @@ import { Button } from "../components/Button";
 import { cn } from "../lib/utils";
 import { Select } from "../components/Select";
 import { TransactionDialog } from "./TransactionDialog";
+import USDTIcon from "../assets/tether-usdt-logo.svg";
 
 const HEXADECIMAL_CHARS = "0123456789abcdef";
 
@@ -138,8 +139,11 @@ function HashMakerApp({ privateKey }: { privateKey: string }) {
           control={control}
           render={({ field }) => (
             <div className="flex flex-col gap-1">
-              <label htmlFor="amount" className="text-center">
-                Amount:
+              <label
+                htmlFor="amount"
+                className="text-center flex items-center justify-center gap-2"
+              >
+                <img src={USDTIcon} alt="USDT" className="w-5 h-5" /> Amount:
               </label>
               <Input type="number" step="any" id="amount" {...field} />
               {errors.amount && (
