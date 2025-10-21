@@ -7,7 +7,7 @@ function App() {
   const [privateKey, setPrivateKey] = useState("");
 
   return (
-    <div className="grid place-items-center min-h-screen p-4">
+    <div className="grid place-items-center min-h-dvh p-4">
       <div className="w-full max-w-sm flex flex-col gap-4 py-4">
         <img src={Logo} alt="Hash Maker Logo" className="w-32 h-32 mx-auto" />
         <h1 className="text-5xl text-center font-megrim">Hash Maker</h1>
