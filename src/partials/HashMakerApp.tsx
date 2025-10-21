@@ -108,10 +108,12 @@ function HashMakerApp({ privateKey }: { privateKey: string }) {
         onSubmit={handleSubmit(findMatchingHash)}
         className="flex flex-col gap-4 my-4"
       >
-        <h3 className="font-bold text-center break-all">
-          {" "}
-          with address: {address}
+        {/* Address */}
+        <h3 className="font-mono font-bold text-blue-400 text-center break-all">
+          {address}
         </h3>
+
+        {/* Receiver Address */}
         <Controller
           name="receiverAddress"
           control={control}
@@ -129,6 +131,8 @@ function HashMakerApp({ privateKey }: { privateKey: string }) {
             </div>
           )}
         />
+
+        {/* Amount */}
         <Controller
           name="amount"
           control={control}
@@ -145,6 +149,7 @@ function HashMakerApp({ privateKey }: { privateKey: string }) {
           )}
         />
 
+        {/* Gas Limit */}
         <Controller
           name="gasLimit"
           control={control}
@@ -166,6 +171,8 @@ function HashMakerApp({ privateKey }: { privateKey: string }) {
             </div>
           )}
         />
+
+        {/* Target Character */}
         <Controller
           name="targetCharacter"
           control={control}
@@ -198,6 +205,8 @@ function HashMakerApp({ privateKey }: { privateKey: string }) {
             </div>
           )}
         />
+
+        {/* Submit Button */}
         <Button type="submit">Find Matching Hash</Button>
       </form>
     </>
