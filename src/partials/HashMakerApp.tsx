@@ -31,6 +31,7 @@ const hashMakerSchema = yup
 function HashMakerApp({ privateKey }: { privateKey: string }) {
   const ref = useRef<HashMaker | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
   const [address, setAddress] = useState<string | null>(null);
   const [hashResult, setHashResult] = useState<HashResult | null>(null);
 
@@ -42,7 +43,7 @@ function HashMakerApp({ privateKey }: { privateKey: string }) {
     defaultValues: {
       receiverAddress: "",
       amount: "",
-      gasLimit: "average",
+      gasLimit: "fast",
       targetCharacter: "",
     },
     resolver: yupResolver(hashMakerSchema),
@@ -66,6 +67,8 @@ function HashMakerApp({ privateKey }: { privateKey: string }) {
     })) as HashResult;
 
     console.log("Result:", result);
+    setIsSubmitting(false);
+    setIsSuccess(false);
     setHashResult(result);
   };
 
@@ -74,10 +77,12 @@ function HashMakerApp({ privateKey }: { privateKey: string }) {
 
     try {
       setIsSubmitting(true);
+      setIsSuccess(false);
       await ref.current.submitTransferTransaction(hashResult);
       alert("Transaction submitted successfully!");
-      setHashResult(null);
+      setIsSuccess(true);
     } catch (error) {
+      setIsSuccess(false);
       console.error("Error submitting transaction:", error);
       alert("Failed to submit transaction.");
     } finally {
@@ -99,10 +104,15 @@ function HashMakerApp({ privateKey }: { privateKey: string }) {
     <>
       {hashResult && (
         <TransactionDialog
+          isSuccess={isSuccess}
           isSubmitting={isSubmitting}
           hashResult={hashResult}
           submitTransaction={submitTransaction}
-          onClose={() => setHashResult(null)}
+          onClose={() => {
+            setHashResult(null);
+            setIsSuccess(false);
+            setIsSubmitting(false);
+          }}
         />
       )}
       <form
