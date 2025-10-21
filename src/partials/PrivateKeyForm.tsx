@@ -3,6 +3,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { Button } from "../components/Button";
 import { Textarea } from "../components/Textarea";
+import { HiKey } from "react-icons/hi2";
 
 const privateKeySchema = yup
   .object({
@@ -37,7 +38,10 @@ function PrivateKeyForm({
             />
           )}
         />
-        <Button type="submit">Submit</Button>
+        <Button type="submit">
+          <HiKey className="size-5" />
+          Submit
+        </Button>
       </form>
     </>
   );

@@ -9,6 +9,7 @@ import { cn } from "../lib/utils";
 import { Select } from "../components/Select";
 import { TransactionDialog } from "./TransactionDialog";
 import USDTIcon from "../assets/tether-usdt-logo.svg";
+import { HiArrowPath, HiOutlineMagnifyingGlass } from "react-icons/hi2";
 
 const HEXADECIMAL_CHARS = "0123456789abcdef";
 const hashMakerSchema = yup
@@ -227,7 +228,17 @@ function HashMakerApp({ privateKey }: { privateKey: string }) {
 
         {/* Submit Button */}
         <Button type="submit" disabled={isProcessing}>
-          {isProcessing ? "Processing..." : "Find Matching Hash"}
+          {isProcessing ? (
+            <>
+              <HiArrowPath className="size-5 animate-spin" />
+              Processing...
+            </>
+          ) : (
+            <>
+              <HiOutlineMagnifyingGlass className="size-5" />
+              Find Matching Hash
+            </>
+          )}
         </Button>
       </form>
     </>

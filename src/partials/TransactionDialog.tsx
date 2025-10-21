@@ -2,7 +2,12 @@ import { type HashResult } from "../lib/HashMaker";
 import { Button } from "../components/Button";
 import { Dialog } from "radix-ui";
 import { cn, copyToClipboard } from "../lib/utils";
-import { HiOutlineClipboard } from "react-icons/hi2";
+import {
+  HiArrowPath,
+  HiOutlineClipboard,
+  HiPaperAirplane,
+} from "react-icons/hi2";
+import { HiOutlineX } from "react-icons/hi";
 
 function HashResultDetail({
   title,
@@ -101,10 +106,23 @@ function TransactionDialog({
               )}
 
               {isSuccess ? (
-                <Button onClick={onClose}>Close</Button>
+                <Button onClick={onClose}>
+                  <HiOutlineX className="size-5" />
+                  Close
+                </Button>
               ) : (
                 <Button disabled={isSubmitting} onClick={submitTransaction}>
-                  {isSubmitting ? "Submitting..." : "Submit Transaction"}
+                  {isSubmitting ? (
+                    <>
+                      <HiArrowPath className="size-5 animate-spin" />
+                      Submitting...
+                    </>
+                  ) : (
+                    <>
+                      <HiPaperAirplane className="size-5" />
+                      Submit Transaction
+                    </>
+                  )}
                 </Button>
               )}
             </div>
