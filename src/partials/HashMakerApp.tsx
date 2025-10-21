@@ -29,7 +29,7 @@ const hashMakerSchema = yup
 
 function HashMakerApp({ privateKey }: { privateKey: string }) {
   const ref = useRef<HashMaker | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [address, setAddress] = useState<string | null>(null);
   const [hashResult, setHashResult] = useState<HashResult | null>(null);
@@ -56,6 +56,8 @@ function HashMakerApp({ privateKey }: { privateKey: string }) {
   }) => {
     if (!ref.current) return;
 
+    setIsProcessing(true);
+
     console.log("Starting search for matching hash...");
     const result = (await ref.current.generateTransaction({
       targetCharacter: data.targetCharacter,
@@ -66,7 +68,7 @@ function HashMakerApp({ privateKey }: { privateKey: string }) {
     })) as HashResult;
 
     console.log("Result:", result);
-    setIsSubmitting(false);
+    setIsProcessing(false);
     setIsSuccess(false);
     setHashResult(result);
   };
@@ -75,7 +77,7 @@ function HashMakerApp({ privateKey }: { privateKey: string }) {
     if (!ref.current || !hashResult) return;
 
     try {
-      setIsSubmitting(true);
+      setIsProcessing(true);
       setIsSuccess(false);
       await ref.current.submitTransferTransaction(hashResult);
       alert("Transaction submitted successfully!");
@@ -85,7 +87,7 @@ function HashMakerApp({ privateKey }: { privateKey: string }) {
       console.error("Error submitting transaction:", error);
       alert("Failed to submit transaction.");
     } finally {
-      setIsSubmitting(false);
+      setIsProcessing(false);
     }
   };
 
@@ -104,13 +106,13 @@ function HashMakerApp({ privateKey }: { privateKey: string }) {
       {hashResult && (
         <TransactionDialog
           isSuccess={isSuccess}
-          isSubmitting={isSubmitting}
+          isSubmitting={isProcessing}
           hashResult={hashResult}
           submitTransaction={submitTransaction}
           onClose={() => {
             setHashResult(null);
             setIsSuccess(false);
-            setIsSubmitting(false);
+            setIsProcessing(false);
           }}
         />
       )}
@@ -224,7 +226,9 @@ function HashMakerApp({ privateKey }: { privateKey: string }) {
         />
 
         {/* Submit Button */}
-        <Button type="submit">Find Matching Hash</Button>
+        <Button type="submit" disabled={isProcessing}>
+          {isProcessing ? "Processing..." : "Find Matching Hash"}
+        </Button>
       </form>
     </>
   );
