@@ -1,0 +1,12 @@
+import { cn } from "../lib/utils";
+
+const Textarea = (props: React.ComponentProps<"textarea">) => {
+  return (
+    <textarea
+      {...props}
+      className={cn("border rounded-xl border-zinc-700 p-2", props.className)}
+    />
+  );
+};
+
+export { Textarea };
